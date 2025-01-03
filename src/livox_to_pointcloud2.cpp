@@ -81,7 +81,7 @@ void LivoxToPointCloud2::callback(const livox_ros_driver2::msg::CustomMsg::Share
 {
     sensor_msgs::msg::PointCloud2 output;
     output.header = msg->header;
-    output.fields.resize(6);
+    output.fields.resize(7);
 
     output.fields[0].name = "x";
     output.fields[0].offset = 0;
@@ -98,22 +98,27 @@ void LivoxToPointCloud2::callback(const livox_ros_driver2::msg::CustomMsg::Share
     output.fields[2].datatype = sensor_msgs::msg::PointField::FLOAT32;
     output.fields[2].count = 1;
 
-    output.fields[3].name = "intensity";
+    output.fields[3].name = "reflectivity";
     output.fields[3].offset = 12;
-    output.fields[3].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    output.fields[3].datatype = sensor_msgs::msg::PointField::UINT8;
     output.fields[3].count = 1;
 
     output.fields[4].name = "tag";
-    output.fields[4].offset = 16;
+    output.fields[4].offset = 13;
     output.fields[4].datatype = sensor_msgs::msg::PointField::UINT8;
     output.fields[4].count = 1;
 
     output.fields[5].name = "line";
-    output.fields[5].offset = 17;
+    output.fields[5].offset = 14;
     output.fields[5].datatype = sensor_msgs::msg::PointField::UINT8;
     output.fields[5].count = 1;
 
-    output.point_step = 18;
+    output.fields[6].name = "offset_time";
+    output.fields[6].offset = 15;
+    output.fields[6].datatype = sensor_msgs::msg::PointField::UINT32;
+    output.fields[6].count = 1;
+
+    output.point_step = 16;
     output.row_step = output.point_step * msg->point_num;
     output.data.resize(output.row_step);
 
@@ -123,9 +128,10 @@ void LivoxToPointCloud2::callback(const livox_ros_driver2::msg::CustomMsg::Share
         *(reinterpret_cast<float*>(raw_data_ptr + 0)) = point.x;
         *(reinterpret_cast<float*>(raw_data_ptr + 4)) = point.y;
         *(reinterpret_cast<float*>(raw_data_ptr + 8)) = point.z;
-        *(reinterpret_cast<float*>(raw_data_ptr + 12)) = static_cast<float>(point.reflectivity);
-        *(raw_data_ptr + 16) = point.tag;
-        *(raw_data_ptr + 17) = point.line;
+        *(raw_data_ptr + 12) = point.reflectivity;
+        *(raw_data_ptr + 13) = point.tag;
+        *(raw_data_ptr + 14) = point.line;
+        *(reinterpret_cast<float*>(raw_data_ptr + 18)) = static_cast<float>(point.offset_time);
 
         raw_data_ptr += output.point_step;
     }
