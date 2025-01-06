@@ -114,24 +114,24 @@ void LivoxToPointCloud2::callback(const livox_ros_driver2::msg::CustomMsg::Share
     output.fields[5].count = 1;
 
     output.fields[6].name = "offset_time";
-    output.fields[6].offset = 15;
+    output.fields[6].offset = 16;
     output.fields[6].datatype = sensor_msgs::msg::PointField::UINT32;
     output.fields[6].count = 1;
 
-    output.point_step = 16;
+    output.point_step = 20;
     output.row_step = output.point_step * msg->point_num;
     output.data.resize(output.row_step);
 
     uint8_t* raw_data_ptr = output.data.data();
     for (const auto& point : msg->points)
     {
-        *(reinterpret_cast<float*>(raw_data_ptr + 0)) = point.x;
-        *(reinterpret_cast<float*>(raw_data_ptr + 4)) = point.y;
-        *(reinterpret_cast<float*>(raw_data_ptr + 8)) = point.z;
-        *(raw_data_ptr + 12) = point.reflectivity;
-        *(raw_data_ptr + 13) = point.tag;
-        *(raw_data_ptr + 14) = point.line;
-        *(reinterpret_cast<float*>(raw_data_ptr + 18)) = static_cast<float>(point.offset_time);
+        *(reinterpret_cast<float*>(raw_data_ptr + output.fields[0].offset)) = point.x;
+        *(reinterpret_cast<float*>(raw_data_ptr + output.fields[1].offset)) = point.y;
+        *(reinterpret_cast<float*>(raw_data_ptr + output.fields[2].offset)) = point.z;
+        *(reinterpret_cast<uint8_t*>(raw_data_ptr + output.fields[3].offset)) = point.reflectivity;
+        *(reinterpret_cast<uint8_t*>(raw_data_ptr + output.fields[4].offset)) = point.tag;
+        *(reinterpret_cast<uint8_t*>(raw_data_ptr + output.fields[5].offset)) = point.line;
+        *(reinterpret_cast<uint32_t*>(raw_data_ptr + output.fields[6].offset)) = point.offset_time;
 
         raw_data_ptr += output.point_step;
     }
