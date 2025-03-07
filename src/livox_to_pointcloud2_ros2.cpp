@@ -27,6 +27,9 @@ LivoxToPointCloud2::LivoxToPointCloud2(const rclcpp::NodeOptions& options) : rcl
     return;
   }
 
+  // Get existing topics and their types
+  auto topic_map = this->get_topic_names_and_types();
+
   for (size_t i = 0; i < input_topics.size(); ++i) {
     std::string livox_topic = input_topics[i];
     std::string pointcloud_topic = output_topics[i];
@@ -34,6 +37,18 @@ LivoxToPointCloud2::LivoxToPointCloud2(const rclcpp::NodeOptions& options) : rcl
     if (livox_topic == pointcloud_topic) {
       RCLCPP_ERROR(this->get_logger(), "Input topic must not be equal to output topic! %s", livox_topic.c_str());
       return;
+    }
+
+    // Check if the topic already exists with a different type
+    if (topic_map.find(livox_topic) != topic_map.end()) {
+      auto& topic_types = topic_map[livox_topic];
+      for (const auto& type : topic_types) {
+        if (type != "livox_ros_driver2/msg/CustomMsg") { // TODO this only works for ROS2
+          RCLCPP_ERROR(this->get_logger(), "Topic %s already exists with a different type: %s", 
+                       livox_topic.c_str(), type.c_str());
+          return;
+        }        
+      }
     }
 
     // Create a publisher for each topic
