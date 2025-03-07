@@ -8,8 +8,13 @@ This package provides ROS1/ROS2 interfaces to convert ```livox_interfaces::msg::
 # Launch as a ROS1 node
 rosrun livox_to_pointcloud2 livox_to_pointcloud2_node
 
-# Launch as a ROS2 node
+# Launch as a ROS2 node with default input /livox/lidar and output /livox/points
 ros2 run livox_to_pointcloud2 livox_to_pointcloud2_node
+
+# Launch as a ROS2 node with custom topic(s)
+ros2 run livox_to_pointcloud2 livox_to_pointcloud2_node --ros-args \
+  -p input_topics:="[/livox/lidar1,/livox/lidar2]" \
+  -p output_topics:="[/livox/points1,/livox/points2]"
 
 # Launch as a standalone ROS2 component
 ros2 component standalone livox_to_pointcloud2 livox_to_pointcloud2::LivoxToPointCloud2

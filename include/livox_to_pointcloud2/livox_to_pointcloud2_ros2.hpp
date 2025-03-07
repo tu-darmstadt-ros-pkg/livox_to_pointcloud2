@@ -16,9 +16,9 @@ public:
 private:
   LivoxConverter converter;
 
-  rclcpp::SubscriptionBase::SharedPtr livox_sub;
-  rclcpp::SubscriptionBase::SharedPtr livox2_sub;
-  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr points_pub;
+  std::vector<rclcpp::SubscriptionBase::SharedPtr> livox_subs;
+  std::vector<rclcpp::SubscriptionBase::SharedPtr> livox2_subs;
+  std::vector<rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr> points_pubs;
 };
 
 }  // namespace livox_to_pointcloud2
