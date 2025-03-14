@@ -52,7 +52,7 @@ LivoxToPointCloud2::LivoxToPointCloud2(const rclcpp::NodeOptions& options) : rcl
     }
 
     // Create a publisher for each topic
-    auto pub = this->create_publisher<sensor_msgs::msg::PointCloud2>(pointcloud_topic, rclcpp::SensorDataQoS());
+    auto pub = this->create_publisher<sensor_msgs::msg::PointCloud2>(pointcloud_topic, rclcpp::QoS(1));
     points_pubs.push_back(pub);
 
 #ifdef LIVOX_ROS2_DRIVER
